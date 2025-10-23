@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>류성실</title>
+  <style>
+    @font-face {
+      font-family: 'JoseonPalace';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
+      font-weight: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --center-offset-x: -160px; /* 음수면 왼쪽, 양수면 오른쪽 이동 */
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      background-image: url('bg-main.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-color: #000;
+      transition: background-image 0.3s ease;
+    }
+
+    /* 중앙 earth + rocket + dynamite */
+    .center-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(calc(-50% + var(--center-offset-x)), -50%);
+      display: inline-block;
+      text-align: center;
+      z-index: 10;
+    }
+    .center-container img {
+      display: block;
+      margin: 0 auto;
+    }
+    .rocket {
+      position: absolute;
+      bottom: 59%;
+      left: 50%;
+      transform: translate(-50%, -60%);
+      width: 120px;
+    }
+    .earth {
+      width: 300px;
+    }
+    .dynamite {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      z-index: 20;
+      cursor: pointer;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%   { transform: translate(-50%, -50%) scale(1); }
+      50%  { transform: translate(-50%, -50%) scale(1.3); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* 오른쪽 위 nihao */
+    .nihao-img {
+      position: fixed;
+      top: 20px;
+      right: 80px;
+      width: 200px;
+      height: auto;
+      z-index: 30;
+    }
+
+    /* crad (flower 위쪽) */
+    .crad-img {
+      position: fixed;
+      bottom: 210px;
+      left: 330px;
+      width: 150px;
+      height: auto;
+      z-index: 34; /* flower(35) 바로 아래 */
+    }
+
+    /* 왼쪽 아래 flower */
+    .flower-img {
+      position: fixed;
+      bottom: 30px;
+      left: 335px;
+      width: 150px;
+      height: auto;
+      z-index: 35;
+    }
+
+    /* 오른쪽 아래 판다 */
+    .corner-img {
+      position: fixed;
+      bottom: -20px;
+      right: 30px;
+      width: 490px;
+      height: auto;
+      cursor: pointer;
+      z-index: 40; 
+    }
+
+    /* 위쪽 가운데 컨테이너 */
+    .top-center-box {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .sokbo-img {
+      width: 600px;
+      height: auto;
+      display: block;
+    }
+
+    .bok-img {
+      position: absolute;
+      left: -40px;
+      top: -20px;
+      height: 150%;
+      width: auto;
+    }
+
+    /* 공통 팝업 */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .popup-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: transparent;
+      padding: 0;
+      text-align: center;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow: visible;
+      position: relative;
+    }
+
+    .popup-content img {
+      max-width: 80vw;
+      max-height: 80vh;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 28px;
+      z-index: 2000;
+    }
+
+    /* 왼쪽 클릭 영역 */
+    .left-click-area {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 100%;
+      cursor: pointer;
+      z-index: 500;
+    }
+
+    /* 경축 팝업 글 스타일 */
+    .celebration-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+
+    .celebration-text {
+      max-width: 500px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      background: transparent; 
+      font-family: 'JoseonPalace', serif;
+      font-size: 17px;
+      line-height: 1.8;
+      color: #000;
+      text-align: left;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🌍 Earth + 🚀 Rocket + 💣 Dynamite -->
+  <div class="center-container">
+    <img src="earth.gif" alt="Earth" class="earth">
+    <img src="rocket.gif" alt="Rocket" class="rocket">
+    <img src="dynamite.gif" alt="Dynamite" class="dynamite" onclick="playSound()">
+  </div>
+
+  <!-- 🔵 오른쪽 위 nihao -->
+  <img src="nihao.gif" alt="Nihao" class="nihao-img">
+
+  <!-- 🟣 crad (flower 위쪽) -->
+  <img src="crad.gif" alt="Crad" class="crad-img">
+
+  <!-- 🔴 flower -->
+  <img src="flower.gif" alt="Flower" class="flower-img">
+
+  <!-- 오디오 파일 -->
+  <audio id="stopwatchSound" src="stopwatch.mp3"></audio>
+
+  <!-- 🟢 판다 + 속보 + 복 -->
+  <div id="main-ui">
+    <img src="panda.png" alt="Panda" class="corner-img" onclick="openPopup('pandaPopup', true)">
+    <div class="top-center-box" onclick="openPopup('sokboPopup', true)">
+      <img src="breaking.gif" alt="Breaking News GIF" class="sokbo-img">
+      <img src="fortune.gif" alt="Fortune GIF" class="bok-img">
+    </div>
+  </div>
+
+  <!-- 왼쪽 클릭 영역 -->
+  <div class="left-click-area" onclick="openPopup('ajeossiPopup', false)"></div>
+
+  <!-- 속보 팝업 -->
+  <div class="popup" id="sokboPopup">
+    <div class="popup-content">
+      <button class="close-btn" onclick="closePopup('sokboPopup')">×</button>
+      <img src="portrait.png" alt="Portrait Popup">
+    </div>
+  </div>
+
+  <!-- 판다(경축) 팝업 -->
+  <div class="popup" id="pandaPopup">
+    <div class="popup-content">
+      <button class="close-btn" onclick="closePopup('pandaPopup')">×</button>
+      <img src="celebration.png" alt="Celebration Popup">
+      <div class="celebration-overlay">
+        <div class="celebration-text">
+          <p>어디선가 본 듯하지만 도저히 맥락이 잡히지 않는 합성이미지를 마주할 때, 사람들은 종종 "류성실 같다"라고 말한다. 이는 단순히 난해해서가 아니라, 류성실의 작업이 만들어내는 독특한 시각 언어가 이미 대중의 기억 속에 하나의 코드처럼 각인되었기 때문이다. 그의 작업은 현실과 비현실, 종교적 상징과 대중문화, 그리고 촌스러움과 최첨단 이미지가 한 화면 안에서 뒤엉키며 불편함과 웃음을 동시에 자극하는 합성미학을 구축한다.</p>
+          <p>류성실의 디자인적 특성은 크게 세 가지로 정리할 수 있다. 첫째, 옛날 감성의 폰트와 그래픽이다. 90~2000년대 초반의 워드아트풍 입체 글씨, 그림자가 과도하게 들어간 제목, 해상도가 낮아 픽셀이 드러나는 합성 이미지는 의도적으로 '낡은 웹 그래픽'의 분위기를 재현한다. 둘째, 과장된 합성의 어색함이다. 크기가 맞지 않는 인물과 배경, 마치 포토샵으로 덧댄 듯한 오브제, 지나치게 매끄럽거나 반대로 투박하게 깨진 텍스처가 어설픈 리얼리티를 만들어낸다. 셋째, 선전물에서 차용한 레이아웃과 상징이다. 원색의 포스터 톤, 과장된 구호는 사이비 종교 포스터나 북한 선전물의 시각 언어를 연상시킨다. 그러나 류성실은 이를 단순 모방이 아니라 풍자의 장치로 활용한다.</p>
+          <p>그의 대표적인 작업인 &lt;BJ 체리장&gt;은 1인 방송을 차용한 캐릭터로, 인터넷 방송 문화와 종교·자본주의적 욕망을 교묘히 섞어내며 사회를 비트는 풍자를 펼쳤다. 체리장 캐릭터는 화려한 원색 배경, 저해상도 합성 이미지, 낡은 폰트로 꾸며져 있는데, 이는 마치 오래된 인터넷 방송 화면이나 B급 온라인 광고 같은 시각을 재현한다. 그 속에서 그는 한국 사회의 욕망 구조, 가짜 뉴스, 자본과 종교의 교차를 과장된 방식으로 드러내며 비판적 웃음을 이끌어냈다.</p>
+          <p>사람들이 난해한 합성이미지를 보고 "류성실 같다"고 말하는 이유는 바로 여기에 있다. 옛날 폰트와 그래픽, 원색의 과잉, 의도된 합성의 어색함이 충돌하며 만들어내는 낯선 긴장감이 류성실 특유의 미감으로 인식되기 때문이다. 그것은 단순히 조악한 합성이 아니라, 저항과 풍자, 시대적 아이러니를 담은 하나의 문화적 코드다. 그래서 해외 작가들의 실험적 합성이미지나 인터넷에 떠도는 괴상한 그래픽을 접할 때, 사람들은 자연스럽게 "류성실 같다"는 표현을 사용한다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 아저씨 팝업 -->
+  <div class="popup" id="ajeossiPopup">
+    <div class="popup-content">
+      <button class="close-btn" onclick="closePopup('ajeossiPopup')">×</button>
+      <img src="uncle.png" alt="Uncle Popup">
+    </div>
+  </div>
+
+  <script>
+    const originalBg = "url('bg-main.png')";
+    const altBg = "url('bg-plain.png')";
+
+    function setUIVisible(visible) {
+      const disp = visible ? 'block' : 'none';
+      document.getElementById('main-ui').style.display = disp;
+      document.querySelector('.nihao-img').style.display = disp;
+      document.querySelector('.crad-img').style.display = disp;
+      document.querySelector('.flower-img').style.display = disp;
+      document.querySelector('.center-container').style.display = disp;
+      document.querySelector('.left-click-area').style.display = disp;
+    }
+
+    function openPopup(id, changeBg) {
+      document.getElementById(id).style.display = "block";
+      if (changeBg) {
+        document.body.style.backgroundImage = altBg;
+        setUIVisible(false);
+      }
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = "none";
+      const openPopups = Array.from(document.querySelectorAll('.popup'))
+        .filter(p => getComputedStyle(p).display !== 'none');
+      if (openPopups.length === 0) {
+        document.body.style.backgroundImage = originalBg;
+        setUIVisible(true);
+      }
+    }
+
+    function playSound() {
+      const audio = document.getElementById("stopwatchSound");
+      audio.currentTime = 0;
+      audio.play();
+    }
+  </script>
+</body>
+</html>
